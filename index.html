@@ -1,0 +1,74 @@
+<html>
+<head>
+    <script type='text/javascript' src='http://code.jquery.com/jquery-3.3.1.min.js'></script>
+    
+    <script language="JavaScript">
+        var error_wait = 5;
+
+        function fCheckAlive()
+        {
+            return true;
+        }
+
+        function update_jpg1()
+        {
+            $("#myimg1").one("load error", function(event) {
+                if (event.type == "load")
+                {
+                    $("#myimg1").show();
+                    $("#myimg2").hide();
+                    update_jpg2();
+                }
+                if (event.type == "error")
+                {
+                    d = new Date();
+                    console.log("Error loging image waiting " + error_wait + " seconds");
+                    setTimeout(update_jpg2,error_wait * 1000);
+                }
+            }).attr("src", getNextURL());
+        }
+        
+        function update_jpg2()
+        {
+            $("#myimg2").one("load error", function(event) {
+                if (event.type == "load")
+                {
+                    $("#myimg2").show();
+                    $("#myimg1").hide();
+                    update_jpg1();
+                }
+                if (event.type == "error")
+                {
+                    d = new Date();
+                    console.log("Error loging image waiting " + error_wait + " seconds");
+                    setTimeout(update_jpg1,error_wait * 1000);
+                }
+            }).attr("src", getNextURL());
+        }
+
+        function getNextURL()
+        {
+            d = new Date();
+            url = "image.php?src=fake.jpg?" + d.getTime();
+            return url;
+        }
+        
+    </script>
+</head>
+
+<body style="background-color: #F000F0;">
+
+<script>
+$(document).ready(function() 
+{
+    update_jpg1();
+    $("#myimg2").hide();
+    
+});
+</script>
+<div align="right">
+    <iframe id="myimg1" width="320" height="240" frameBorder="0" scrolling="no" ></iframe>
+    <iframe id="myimg2" width="320" height="240" frameBorder="0" scrolling="no" ></iframe>
+</div>
+</body>
+</html>
